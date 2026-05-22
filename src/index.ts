@@ -3,10 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import './db/connection';
 
-import authRoutes from './routes/auth.routes';
-import clientesRoutes from './routes/clientes.routes';
-import productosRoutes from './routes/productos.routes';
-import cajaRoutes from './routes/caja.routes';
+import authRoutes from './routes/auth.routes.js';
+import clientesRoutes from './routes/clientes.routes.js';
+import productosRoutes from './routes/productos.routes.js';
+import cajaRoutes from './routes/caja.routes.js';
 
 dotenv.config();
 
