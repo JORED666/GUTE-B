@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import pool from '../db/connection';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const getClientes = async (req: AuthRequest, res: Response): Promise<void> => {
   try {

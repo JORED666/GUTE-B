@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import pool from '../db/connection';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import pool from '../db/connection.js';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const getPagos = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
