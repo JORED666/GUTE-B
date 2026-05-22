@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import pool from '../db/connection.js';
+import pool from '../db/connection';
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { correo, password } = req.body;
