@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getClientes, getClienteById, createCliente, updateCliente, deleteCliente } from '../controllers/clientes.controller.js';
-import { verificarToken } from '../middlewares/auth.middleware.js';
+import { getClientes, getClienteById, createCliente, updateCliente, deleteCliente } from '../controllers/clientes.controller';
+import { verificarToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 

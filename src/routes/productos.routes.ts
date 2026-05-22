@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getProductos, createProducto, updateProducto, deleteProducto } from '../controllers/productos.controller.js';
-import { verificarToken } from '../middlewares/auth.middleware.js';
+import { getProductos, createProducto, updateProducto, deleteProducto } from '../controllers/productos.controller';
+import { verificarToken } from '../middlewares/auth.middleware'
 
 const router = Router();
 
