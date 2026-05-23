@@ -20,7 +20,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: '🏋️ CODICE GYM API funcionando' });
+  res.json({ message: 'CODICE API funcionando' });
 });
 
 app.use('/api/auth', authRoutes);

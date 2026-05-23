@@ -4,6 +4,8 @@ import { verificarToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 
+router.use(verificarToken);
+
 router.get('/', getPagos);
 router.get('/resumen', getResumen);
 router.post('/', createPago);
