@@ -80,12 +80,33 @@ export const updateCliente = async (req: AuthRequest, res: Response): Promise<vo
   const { nombre, apellido, telefono, correo, status, fk_membresia } = req.body;
 
   try {
+    // Obtener membresía actual del cliente
+    const clienteActual = await pool.query(
+      'SELECT fk_membresia FROM cliente WHERE id_cliente = $1',
+      [req.params.id]
+    );
+
+    let fechaVencimiento = null;
+    const membresiaAnterior = clienteActual.rows[0]?.fk_membresia;
+
+    // Solo recalcular si cambió la membresía
+    if (fk_membresia && fk_membresia != membresiaAnterior) {
+      const membresia = await pool.query(
+        'SELECT duracion_dias FROM membresia WHERE id_membresia = $1',
+        [fk_membresia]
+      );
+      const duracion = membresia.rows[0]?.duracion_dias || 30;
+      fechaVencimiento = new Date();
+      fechaVencimiento.setDate(fechaVencimiento.getDate() + duracion);
+    }
+
     const result = await pool.query(`
       UPDATE cliente
-      SET nombre=$1, apellido=$2, telefono=$3, correo=$4, status=$5, fk_membresia=$6
-      WHERE id_cliente=$7 AND fk_admin=$8
+      SET nombre=$1, apellido=$2, telefono=$3, correo=$4, status=$5, fk_membresia=$6,
+          fecha_vencimiento=COALESCE($7, fecha_vencimiento)
+      WHERE id_cliente=$8 AND fk_admin=$9
       RETURNING *
-    `, [nombre, apellido, telefono, correo, status, fk_membresia, req.params.id, req.adminId]);
+    `, [nombre, apellido, telefono, correo, status, fk_membresia, fechaVencimiento, req.params.id, req.adminId]);
 
     if (result.rows.length === 0) {
       res.status(404).json({ message: 'Cliente no encontrado' });
@@ -98,7 +119,12 @@ export const updateCliente = async (req: AuthRequest, res: Response): Promise<vo
 };
 
 export const deleteCliente = async (req: AuthRequest, res: Response): Promise<void> => {
-  try {
+  try { 
+    await pool.query(
+      'DELETE FROM pago WHERE fk_cliente = $1',
+      [req.params.id]
+    );
+
     const result = await pool.query(
       'DELETE FROM cliente WHERE id_cliente=$1 AND fk_admin=$2 RETURNING *',
       [req.params.id, req.adminId]
