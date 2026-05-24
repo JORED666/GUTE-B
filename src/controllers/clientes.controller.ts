@@ -46,11 +46,14 @@ export const createCliente = async (req: AuthRequest, res: Response): Promise<vo
 
   try {
     const membresia = await pool.query(
-      'SELECT duracion_dias FROM membresia WHERE id_membresia = $1',
+      'SELECT duracion_dias, tipo, precio FROM membresia WHERE id_membresia = $1',
       [fk_membresia]
     );
 
     const duracion = membresia.rows[0]?.duracion_dias || 30;
+    const tipoMembresia = membresia.rows[0]?.tipo;
+    const precioMembresia = membresia.rows[0]?.precio;
+
     const fechaVencimiento = new Date();
     fechaVencimiento.setDate(fechaVencimiento.getDate() + duracion);
 
@@ -60,7 +63,14 @@ export const createCliente = async (req: AuthRequest, res: Response): Promise<vo
       RETURNING *
     `, [nombre, apellido, telefono, correo, fk_membresia, req.adminId, fechaVencimiento]);
 
-    res.status(201).json(result.rows[0]);
+    const clienteCreado = result.rows[0];
+
+    await pool.query(`
+      INSERT INTO pago (fk_cliente, fk_admin, concepto, detalle, monto)
+      VALUES ($1, $2, 'Membresía', $3, $4)
+    `, [clienteCreado.id_cliente, req.adminId, tipoMembresia, precioMembresia]);
+
+    res.status(201).json(clienteCreado);
   } catch (error) {
     res.status(500).json({ message: 'Error al crear cliente', error });
   }

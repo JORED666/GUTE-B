@@ -16,7 +16,10 @@ app.use(cors({
   origin: 'http://localhost:4200',
   credentials: true
 }));
-
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
