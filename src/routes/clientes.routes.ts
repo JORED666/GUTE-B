@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getClientes, getClienteById, createCliente, updateCliente, deleteCliente } from '../controllers/clientes.controller';
 import { verificarToken } from '../middlewares/auth.middleware';
+import { getClientes, getClienteById, createCliente, updateCliente, deleteCliente, getClientesPorVencer } from '../controllers/clientes.controller';
 
 const router = Router();
 
@@ -11,5 +11,6 @@ router.get('/:id', getClienteById);
 router.post('/', createCliente);
 router.put('/:id', updateCliente);
 router.delete('/:id', deleteCliente);
+router.get('/por-vencer', getClientesPorVencer);
 
 export default router;

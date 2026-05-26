@@ -139,3 +139,20 @@ export const deleteCliente = async (req: AuthRequest, res: Response): Promise<vo
     res.status(500).json({ message: 'Error al eliminar cliente', error });
   }
 };
+
+export const getClientesPorVencer = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const result = await pool.query(`
+      SELECT c.*, m.tipo as membresia_tipo
+      FROM cliente c
+      LEFT JOIN membresia m ON c.fk_membresia = m.id_membresia
+      WHERE c.fk_admin = $1
+        AND c.status = 'activo'
+        AND c.fecha_vencimiento BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
+      ORDER BY c.fecha_vencimiento ASC
+    `, [req.adminId]);
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener clientes por vencer', error });
+  }
+};
